@@ -25,9 +25,10 @@ def driver():
             Path.cwd() / "web_drivers/chromedriver.exe", options=chrome_options
         )
         if os.name == "nt"
-        else webdriver.Chrome(
-            Path.cwd() / "web_drivers/chromedriver", options=chrome_options
-        )
+        #else webdriver.Chrome(
+        #    Path.cwd() / "web_drivers/chromedriver", options=chrome_options
+        #)
+        else webdriver.Chrome(options=chrome_options)
     )
 
     return chrome_driver
@@ -57,7 +58,7 @@ def scrape_product_urls_source(chrome_driver, url: str):
     :return:
     """
     chrome_driver.get(url)
-    if wait_for_element_to_load(chrome_driver, "qaNIZv"):
+    if wait_for_element_to_load(chrome_driver, "_3ZV7fL"):
         scroll_down(chrome_driver)
         if wait_products_elements(chrome_driver):
             html_source = chrome_driver.page_source
@@ -79,9 +80,9 @@ def get_product_urls(chrome_driver, url: str) -> [str]:
 
 
 def wait_products_elements(chrome_driver):
-    product_category = wait_for_element_to_load(chrome_driver, "JFOy4z")
-    product_price = wait_for_element_to_load(chrome_driver, "_3n5NQx")
-    product_description = wait_for_element_to_load(chrome_driver, "_2u0jt9")
+    product_category = wait_for_element_to_load(chrome_driver, "jwx63k")
+    product_price = wait_for_element_to_load(chrome_driver, "AJyN7v")
+    product_description = wait_for_element_to_load(chrome_driver, "_3Wm5aN")
 
     return all([product_category, product_price, product_description])
 
@@ -101,6 +102,7 @@ def get_product_details(url: str) -> dict:
     product_quantity = _get_product_quantity(chrome_driver)
     product_description = _get_product_description(soup)
     product_image = _get_product_image(chrome_driver)
+    #product_image = None
 
     chrome_driver.close()
 
@@ -132,7 +134,8 @@ def _get_product_image(chrome_driver) -> str:
     :param chrome_driver: chrome web driver instance
     :return: product image url
     """
-    product_photos = chrome_driver.find_elements_by_class_name("ZPN9uD")
+    import pdb
+    product_photos = chrome_driver.find_elements_by_class_name("_3nZG-L")
     item = None
 
     if len(product_photos) != 1:
@@ -143,7 +146,7 @@ def _get_product_image(chrome_driver) -> str:
             hover_to_photos(chrome_driver, product_photo)
 
         soup = BeautifulSoup(chrome_driver.page_source, "html.parser")
-        item = soup.find(class_="_2JMB9h")
+        item = soup.find(class_="_2wBoeW")
 
         if item:
             break
@@ -164,7 +167,7 @@ def _get_product_price(soup) -> str:
     :param soup: product page html source
     :return: product price
     """
-    item = soup.find(class_="_3n5NQx").text
+    item = soup.find(class_="AJyN7v").text
     product_price = item.split("₱")[-1].replace(",", "")
 
     return product_price
@@ -176,7 +179,7 @@ def _get_product_name(soup) -> str:
     :param soup: product page html source
     :return: product name
     """
-    item = soup.find(class_="qaNIZv")
+    item = soup.find(class_="_3ZV7fL")
     item_name = item.find("span").text
 
     return item_name
@@ -188,7 +191,7 @@ def _get_product_category(soup) -> str:
     :param soup: product page html source
     :return: product category
     """
-    item = soup.findAll(class_="JFOy4z")
+    item = soup.findAll(class_="jwx63k")
     item_category = item[1].text
 
     return item_category
@@ -200,7 +203,7 @@ def _get_product_description(soup) -> str:
     :param soup: product page html source
     :return: product description
     """
-    item = soup.find(class_="_2u0jt9")
+    item = soup.find(class_="_36_A1j")
     item_description = item.find("span").text
 
     return item_description

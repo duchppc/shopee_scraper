@@ -9,7 +9,7 @@ from helpers.scrape_product_details_helper import (
     driver,
 )
 from helpers.database import verify_tables, create_product_table, save_product
-
+from datetime import datetime
 
 def scrape_task(url: str) -> list:
     """
@@ -44,6 +44,9 @@ def main() -> None:
         "https://shopee.ph/Women's-Apparel-cat.102",
     ]
     product_list_urls = []
+    
+    with open ('start.txt', 'w') as out_file:
+        print(str(datetime.now()), file=out_file) 
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
         results = [executor.submit(scrape_task, url) for url in urls]
@@ -64,7 +67,11 @@ def main() -> None:
                 print(f"{process.result()['name']} - Success")
             except Exception as e:
                 print(f"Exception: {str(e)}")
-
+    
+    with open ('end.txt', 'w') as out_file:
+        print(str(datetime.now()), file=out_file) 
 
 if __name__ == "__main__":
     main()
+    #res = get_product_details('https://shopee.ph/product/309077905/5456276951')
+    #save_product(res)
